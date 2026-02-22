@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ai_agent_db
+      POSTGRES_USER: ai_agent_user
+      POSTGRES_PASSWORD: ai_agent_password
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    command: sh -c "python django_ai_agent/manage.py migrate && python django_ai_agent/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: 1
+      DATABASE_URL: postgres://ai_agent_user:ai_agent_password@db:5432/ai_agent_db
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

@@ -1,0 +1,237 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}Scan - AI Information Gathering Agent{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 id="scan-title">Start New Scan</h1>
+    
+    <form id="scan-form">
+        <div class="form-group">
+            <label for="target" id="target-label">Target:</label>
+            <input type="text" id="target" name="target" placeholder="Enter domain or IP address" required>
+        </div>
+        
+        <div class="form-group">
+            <label id="modules-label">Modules:</label>
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" name="modules" value="whois" checked>
+                    <span id="whois-label">WHOIS</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="modules" value="domain" checked>
+                    <span id="domain-label">Domain Information</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="modules" value="port" checked>
+                    <span id="port-label">Port Scanning</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="modules" value="sensitive" checked>
+                    <span id="sensitive-label">Sensitive Information</span>
+                </label>
+                <label>
+                    <input type="checkbox" name="modules" value="github" checked>
+                    <span id="github-label">GitHub Search</span>
+                </label>
+            </div>
+        </div>
+        
+        <button type="submit" class="btn-primary" id="start-scan-button">Start Scan</button>
+    </form>
+    
+    <div id="scan-results" class="scan-results" style="display: none;">
+        <h2 id="scan-results-label">Scan Results</h2>
+        <div id="results-content"></div>
+    </div>
+</div>
+
+<script>
+// Language translations
+const translations = {
+    en: {
+        "scan-title": "Start New Scan",
+        "target-label": "Target:",
+        "modules-label": "Modules:",
+        "whois-label": "WHOIS",
+        "domain-label": "Domain Information",
+        "port-label": "Port Scanning",
+        "sensitive-label": "Sensitive Information",
+        "github-label": "GitHub Search",
+        "start-scan-button": "Start Scan",
+        "scan-results-label": "Scan Results",
+        "enter-target": "Please enter a target",
+        "select-module": "Please select at least one module",
+        "scan-success": "Scan started successfully!",
+        "scan-id": "Scan ID:",
+        "message": "Message:",
+        "error": "Error:",
+        "error-starting-scan": "Error starting scan:"
+    },
+    zh: {
+        "scan-title": "开始新扫描",
+        "target-label": "目标:",
+        "modules-label": "模块:",
+        "whois-label": "WHOIS",
+        "domain-label": "域名信息",
+        "port-label": "端口扫描",
+        "sensitive-label": "敏感信息",
+        "github-label": "GitHub搜索",
+        "start-scan-button": "开始扫描",
+        "scan-results-label": "扫描结果",
+        "enter-target": "请输入目标",
+        "select-module": "请至少选择一个模块",
+        "scan-success": "扫描启动成功！",
+        "scan-id": "扫描ID:",
+        "message": "消息:",
+        "error": "错误:",
+        "error-starting-scan": "启动扫描时出错:"
+    }
+};
+
+// Apply language translation
+function applyLanguage(language) {
+    const elements = Object.keys(translations.en);
+    elements.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = translations[language][elementId];
+        }
+    });
+    
+    // Update placeholders separately
+    const targetInput = document.getElementById('target');
+    if (targetInput) {
+        targetInput.placeholder = language === 'zh' ? '输入域名或IP地址' : 'Enter domain or IP address';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Apply language on page load
+    const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+    applyLanguage(preferredLanguage);
+    
+    const scanForm = document.getElementById('scan-form');
+    
+    scanForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const target = document.getElementById('target').value;
+        const modules = Array.from(document.querySelectorAll('input[name="modules"]:checked'))
+                             .map(checkbox => checkbox.value);
+        
+        if (!target) {
+            alert(translations[preferredLanguage]['enter-target']);
+            return;
+        }
+        
+        if (modules.length === 0) {
+            alert(translations[preferredLanguage]['select-module']);
+            return;
+        }
+        
+        // Send scan request to API
+        fetch('/api/scan/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                target: target,
+                modules: modules
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('results-content').innerHTML = 
+                    `<p>${translations[preferredLanguage]['scan-success']}</p>
+                     <p>${translations[preferredLanguage]['scan-id']} ${data.scan_id}</p>
+                     <p>${translations[preferredLanguage]['message']} ${data.message}</p>`;
+                document.getElementById('scan-results').style.display = 'block';
+            } else {
+                alert(translations[preferredLanguage]['error'] + ' ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert(translations[preferredLanguage]['error-starting-scan'] + ' ' + error);
+        });
+    });
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+
+<style>
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.checkbox-group label {
+    font-weight: normal;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.scan-results {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+</style>
+{% endblock %}

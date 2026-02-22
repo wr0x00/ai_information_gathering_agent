@@ -1,0 +1,77 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}Dashboard - AI Information Gathering Agent{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 id="dashboard-title">AI Information Gathering Agent Dashboard</h1>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3 id="total-scans-label">Total Scans</h3>
+            <p id="total-scans">0</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="active-scans-label">Active Scans</h3>
+            <p id="active-scans">0</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="generated-reports-label">Generated Reports</h3>
+            <p id="generated-reports">0</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="saved-configs-label">Saved Configurations</h3>
+            <p id="saved-configs">0</p>
+        </div>
+    </div>
+    
+    <div class="recent-activity">
+        <h2 id="recent-activity-label">Recent Activity</h2>
+        <div id="activity-list">
+            <p id="loading-text">Loading recent activity...</p>
+        </div>
+    </div>
+</div>
+
+<script src="/static/frontend/js/dashboard.js"></script>
+<script>
+    // Language translations
+    const translations = {
+        en: {
+            "dashboard-title": "AI Information Gathering Agent Dashboard",
+            "total-scans-label": "Total Scans",
+            "active-scans-label": "Active Scans",
+            "generated-reports-label": "Generated Reports",
+            "saved-configs-label": "Saved Configurations",
+            "recent-activity-label": "Recent Activity",
+            "loading-text": "Loading recent activity..."
+        },
+        zh: {
+            "dashboard-title": "AI信息收集代理仪表板",
+            "total-scans-label": "总扫描数",
+            "active-scans-label": "活动扫描",
+            "generated-reports-label": "生成报告",
+            "saved-configs-label": "保存配置",
+            "recent-activity-label": "最近活动",
+            "loading-text": "正在加载最近活动..."
+        }
+    };
+    
+    // Apply language translation
+    function applyLanguage(language) {
+        const elements = Object.keys(translations.en);
+        elements.forEach(elementId => {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.textContent = translations[language][elementId];
+            }
+        });
+    }
+    
+    // Set language on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'en';
+        applyLanguage(preferredLanguage);
+    });
+</script>
+{% endblock %}

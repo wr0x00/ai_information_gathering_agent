@@ -1,0 +1,31 @@
+domain:
+  enabled: true
+  sources:
+  - https://github.com/wgpsec/ENScan_GO
+  - https://www.xiaolanben.com/pc
+  - https://www.qichacha.com
+  - https://www.tianyancha.com
+  - https://aiqicha.baidu.com
+  subdomain_tools:
+  - https://github.com/shmilylty/OneForAll
+  - https://github.com/OWASP/Amass
+  - https://github.com/projectdiscovery/subfinder
+github:
+  enabled: true
+  sources:
+  - https://github.com/search?type=code&q={}
+port:
+  enabled: true
+  tools:
+  - https://nmap.org
+  - https://github.com/robertdavidgraham/masscan
+sensitive:
+  enabled: true
+  google_dorks:
+  - site:{} intitle:管理|后台|登陆|管理员|系统|内部
+  - site:{} inurl:login|admin|system|guanli|denglu|manage|admin_login|auth|dev
+whois:
+  enabled: true
+  sources:
+  - https://whois.chinaz.com
+  - https://bgp.he.net

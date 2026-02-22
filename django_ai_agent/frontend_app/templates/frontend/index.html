@@ -1,0 +1,16 @@
+{% extends 'frontend/base.html' %}
+
+{% block title %}AI Information Gathering Agent{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div id="app-root">
+        <div class="loading">
+            <h1>Loading AI Information Gathering Agent...</h1>
+            <p>Please wait while the application initializes.</p>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'frontend/js/bundle.js' %}"></script>
+{% endblock %}

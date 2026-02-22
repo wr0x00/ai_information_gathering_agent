@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Information Gathering Agent{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'frontend/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'frontend/css/dashboard.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1 class="nav-logo">AI Information Gathering Agent</h1>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/scan/" class="nav-link">Scans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/keywords/" class="nav-link">Keywords</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/reports/" class="nav-link">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/config/" class="nav-link">Configuration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/chat/" class="nav-link">AI Chat</a>
+                    </li>
+                    <!-- Language Switcher -->
+                    <li class="nav-item language-switcher">
+                        <select id="language-selector" onchange="switchLanguage()">
+                            <option value="en" {% if LANGUAGE_CODE == 'en' %}selected{% endif %}>English</option>
+                            <option value="zh" {% if LANGUAGE_CODE == 'zh' %}selected{% endif %}>中文</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 AI Information Gathering Agent. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'frontend/js/bundle.js' %}"></script>
+    <script>
+        // Language switching function
+        function switchLanguage() {
+            const languageSelector = document.getElementById('language-selector');
+            const selectedLanguage = languageSelector.value;
+            
+            // Store the selected language in localStorage
+            localStorage.setItem('preferredLanguage', selectedLanguage);
+            
+            // Reload the page to apply the language change
+            location.reload();
+        }
+        
+        // Set the language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const preferredLanguage = localStorage.getItem('preferredLanguage');
+            if (preferredLanguage) {
+                const languageSelector = document.getElementById('language-selector');
+                languageSelector.value = preferredLanguage;
+            }
+        });
+    </script>
+</body>
+</html>

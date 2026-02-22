@@ -1,0 +1,86 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-information-gathering-agent"
+description = "An advanced AI-powered information gathering tool for cybersecurity professionals"
+readme = "README.md"
+authors = [{name = "AI Security Research Team", email = "security@example.com"}]
+license = {text = "MIT"}
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "Topic :: Security",
+    "Topic :: Internet",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "Django>=6.0",
+    "djangorestframework>=3.14.0",
+    "httpx>=0.23.0",
+    "PyYAML>=6.0",
+    "python-docx>=0.8.11",
+    "reportlab>=3.6.0",
+    "openai>=0.27.0",
+    "anthropic>=0.3.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=4.9.0",
+    "aiodns>=3.0.0",
+    "aiomysql>=0.1.14",
+    "async-timeout>=4.0.2",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "black>=22.0",
+    "flake8>=4.0",
+    "mypy>=0.950",
+]
+
+[project.scripts]
+ai-agent = "main:main"
+
+[project.urls]
+Homepage = "https://github.com/example/ai-information-gathering-agent"
+Repository = "https://github.com/example/ai-information-gathering-agent"
+Documentation = "https://github.com/example/ai-information-gathering-agent#readme"
+
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "dirty-tag"
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
